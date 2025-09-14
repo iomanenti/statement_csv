@@ -1,0 +1,12 @@
+# Ignore contents of the temp directory
+temp/*
+
+# Ignore contents of the statements directory
+statements/*
+
+# Ignore environment variables file
+.env
+
+# Ignore Python virtual environments
+.venv/
+.venv38/

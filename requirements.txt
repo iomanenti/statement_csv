@@ -1,0 +1,9 @@
+google-cloud-aiplatform
+PyMuPDF
+Pillow
+numpy
+scikit-image
+python-dotenv
+requests
+google-auth
+tqdm
