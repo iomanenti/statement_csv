@@ -57,16 +57,20 @@ def main():
         print(f"Error: Expected output file '{original_output_file}' not found. Cannot rename.")
         return
 
+    # Create the output directory if it doesn't exist
+    output_dir = "outputs"
+    os.makedirs(output_dir, exist_ok=True)
+
     # Generate the new filename
     pdf_basename = os.path.splitext(os.path.basename(pdf_path))[0]
     timestamp = datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
-    new_filename = f"{pdf_basename}-{timestamp}.csv"
+    new_filename = os.path.join(output_dir, f"{pdf_basename}-{timestamp}.csv")
 
     try:
         os.rename(original_output_file, new_filename)
-        print(f"Successfully renamed output to: {new_filename}")
+        print(f"Successfully saved output to: {new_filename}")
     except OSError as e:
-        print(f"Error renaming file: {e}")
+        print(f"Error moving file: {e}")
         return
 
     # --- Step 4: Clean up temp folder ---

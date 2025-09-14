@@ -1,7 +1,7 @@
 import fitz  # PyMuPDF
 from PIL import Image
 import numpy as np
-from skimage import color, filters, morphology, transform
+from skimage import color, filters, morphology
 import argparse
 import os
 import io
@@ -47,30 +47,6 @@ def binarize_image(image_array):
     binary_image = gray_image > thresh
     return binary_image
 
-def deskew_image(image_array):
-    # Convert to grayscale if not already
-    if len(image_array.shape) == 3 and image_array.shape[2] == 3:
-        gray_image = color.rgb2gray(image_array)
-    else:
-        gray_image = image_array
-
-    # Estimate skew angle (example using moments, more robust methods exist)
-    # This is a simplified example; real deskewing often involves Hough transforms or similar.
-    # For simplicity, we'll assume a small skew and try to correct it.
-    # A more advanced implementation would involve detecting text lines.
-    
-    # For demonstration, let's assume a fixed small angle or use a placeholder.
-    # In a real scenario, you'd use a library like `imutils` or implement a more complex algorithm.
-    # For now, we'll just return the original image, as scikit-image doesn't have a direct deskew function.
-    # You might need to implement this using OpenCV or a more specialized library.
-    return image_array
-
-def remove_noise(image_array):
-    # Apply a median filter to remove salt-and-pepper noise
-    # For Gaussian noise, a Gaussian filter would be more appropriate
-    denoised_image = filters.median(image_array)
-    return denoised_image
-
 def normalize_image(image_array):
     # Normalize image to 0-1 range (if not already) and then stretch contrast
     normalized_image = (image_array - np.min(image_array)) / (np.max(image_array) - np.min(image_array))
@@ -83,24 +59,6 @@ def scale_image(image_array, dpi=300):
     # For demonstration, we'll assume the input is already at a good DPI.
     # If you need to scale, you would calculate the new dimensions.
     return image_array
-
-def thin_and_skeletonize_image(image_array):
-    # Convert to grayscale and then to binary if not already
-    if len(image_array.shape) == 3 and image_array.shape[2] == 3:
-        gray_image = color.rgb2gray(image_array)
-    else:
-        gray_image = image_array
-    
-    # Ensure image is binary (True/False) for skeletonization
-    if gray_image.dtype != bool:
-        thresh = filters.threshold_otsu(gray_image)
-        binary_image = gray_image > thresh
-    else:
-        binary_image = gray_image
-
-    # Apply skeletonization
-    skeleton = morphology.skeletonize(binary_image)
-    return skeleton
 
 def thicken_lines(image_array, iterations=1, kernel_size=2):
     binary_image = image_array.astype(bool)
@@ -121,16 +79,9 @@ def thicken_lines(image_array, iterations=1, kernel_size=2):
 def enhance_image(image_array):
     # Apply enhancements in a typical order
     enhanced_image = normalize_image(image_array)
-    enhanced_image = remove_noise(enhanced_image)
-    # Deskewing is complex and often requires a binary image or text detection
-    # For now, we'll call it but note its limitation.
-    enhanced_image = deskew_image(enhanced_image)
     enhanced_image = binarize_image(enhanced_image)
-    enhanced_image = thicken_lines(enhanced_image, iterations=1, kernel_size=3)  # thicken black lines
-    # Scaling is handled by PyMuPDF initially, but can be reapplied if needed
+    enhanced_image = thicken_lines(enhanced_image, iterations=2, kernel_size=2)
     enhanced_image = scale_image(enhanced_image)
-    # Thinning/Skeletonization is typically for specific OCR tasks, apply after binarization
-    #enhanced_image = thin_and_skeletonize_image(enhanced_image)
     return enhanced_image
 
 def main():

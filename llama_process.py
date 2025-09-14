@@ -29,9 +29,10 @@ The header for this document is: "{header}"
 Instructions:
 1.  Analyze the image to find all rows that belong to the transaction table with the header provided above.
 2.  For each transaction row you find, format it as a single line with values separated by a semicolon (;), matching the order of the header.
-3.  Return one line for each transaction found.
-4.  If the page does not contain any transaction rows, you must return an empty response.
-5.  Do NOT include the header row in your output. Only return the data rows. Do not add any other text, explanations, or comments.
+3.  If a cell within a transaction row is visually empty or contains no relevant text for a specific column, you must use a asterisk '*' as a placeholder for that cell. Every line of output must have the same number of fields as the header.
+4.  Return one line for each transaction found.
+5.  If the page does not contain any transaction rows, you must return an empty response.
+6.  Do NOT include the header row in your output. Only return the data rows. Do not add any other text, explanations, or comments.
 """
 
 # --- Utility Functions ---

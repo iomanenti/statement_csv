@@ -10,3 +10,6 @@ statements/*
 # Ignore Python virtual environments
 .venv/
 .venv38/
+
+# Ignore output files
+outputs/
